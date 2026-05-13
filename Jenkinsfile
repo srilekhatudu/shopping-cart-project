@@ -26,7 +26,7 @@ pipeline {
                     
                     withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
                         // Build the container using your Dockerfile
-                        sh "docker build -t ${dockerImage}:latest ."
+                        sh "docker build -t ${dockerImage}:latest -f src/main/java/com/example/Dockerfile ."
                         
                         // Login and push to srilekhatudu Docker Hub
                         sh "echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin"
