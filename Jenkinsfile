@@ -25,13 +25,21 @@ pipeline {
                     def dockerImage = 'srilekhatudu/shopping-cart-app'
                     
                     withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
-                        // Build the container using your Dockerfile
+                        // Pointing to the specific path of your Dockerfile
                         sh "docker build -t ${dockerImage}:latest -f src/main/java/com/example/Dockerfile ."
                         
-                        // Login and push to srilekhatudu Docker Hub
                         sh "echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin"
                         sh "docker push ${dockerImage}:latest"
                     }
+                }
+            }
+        }
+
+        stage('Deploy to AKS') {
+            steps {
+                script {
+                    // This will look for deployment.yaml in your root folder
+                    sh 'kubectl apply -f deployment.yaml'
                 }
             }
         }
